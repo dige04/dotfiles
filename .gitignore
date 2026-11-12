@@ -1,0 +1,4 @@
+.DS_Store
+# Karabiner writes these into its (linked) config directory
+home/.config/karabiner/automatic_backups/
+home/.config/karabiner/*.bak

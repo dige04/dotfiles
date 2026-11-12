@@ -1,0 +1,294 @@
+# Machine setup for Hieu's Macs, applied with `mise bootstrap`.
+#
+# ~/.config/mise/config.toml is a symlink to this file. Per-machine values
+# (git identity) live in ~/.config/mise/config.local.toml, which setup.sh
+# writes and which is never committed.
+#
+# One tool per job: CLIs and runtimes go in [tools]; Homebrew is only for
+# libraries, services and things mise has no backend for; apps are casks.
+
+[settings]
+experimental = true
+legacy_version_file_disable_tools = ['java']
+idiomatic_version_file_enable_tools = ["node"]
+
+[settings.npm]
+package_manager = "pnpm"
+
+[settings.pipx]
+uvx = true
+
+[settings.cargo]
+binstall = true
+
+[settings.github]
+# Avoids GitHub API rate limits once `gh auth login` has run; harmless before.
+credential_command = "gh auth token"
+
+# =============================================================================
+# Tools (mise install)
+# =============================================================================
+[tools]
+# Runtimes
+go = "1.25.1"
+node = "latest"
+python = "3.11"
+rust = "latest"
+zig = "0.11.0"
+bun = "latest"
+pnpm = "latest"
+uv = "latest"
+
+# Shell and everyday CLIs
+starship = "latest"
+zoxide = "latest"
+fzf = "latest"
+fd = "latest"
+bat = "latest"
+ripgrep = "latest"
+ast-grep = "latest"
+jq = "latest"
+yq = "latest"
+dasel = "latest"
+jnv = "latest"
+direnv = "latest"
+neovim = "0.11.4"
+lazygit = "latest"
+delta = "latest"
+"forgejo:mergiraf/mergiraf" = "latest"
+gh = "latest"
+git-lfs = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+usage = "latest"
+doggo = "latest"
+hurl = "latest"
+k6 = "latest"
+yt-dlp = "latest"
+pandoc = "latest"
+typst = "latest"
+rclone = "latest"
+gitleaks = "latest"
+actionlint = "latest"
+
+# Cloud and infra
+cloudflared = "latest"
+kubectl = "latest"
+k9s = "latest"
+terraform = "latest"
+doctl = "latest"
+
+# AI agents and their helpers
+claude = "latest"
+codex = "latest"
+opencode = "latest"
+gemini-cli = "latest"
+"npm:@kaitranntt/ccs" = "latest"
+"npm:ccusage" = "latest"
+"npm:mcp-chrome-bridge" = "latest"
+"github:router-for-me/CLIProxyAPI" = { version = "latest", exe = "cli-proxy-api" }
+"github:asyrjasalo/dynamic-mcp" = "latest"
+"github:memextech/ht-mcp" = "latest"
+
+# Security
+"github:bettercap/bettercap" = "latest"
+
+# =============================================================================
+# Dotfiles: links from ~ into ~/.dotfiles
+# =============================================================================
+[dotfiles]
+"~/.config/mise/config.toml" = { source = "~/.dotfiles/mise/config.toml", mode = "symlink" }
+
+"~/.zshrc" = { source = "~/.dotfiles/home/.zshrc", mode = "symlink" }
+"~/.zprofile" = { source = "~/.dotfiles/home/.zprofile", mode = "symlink" }
+"~/.profile" = { source = "~/.dotfiles/home/.profile", mode = "symlink" }
+"~/.tmux.conf" = { source = "~/.dotfiles/home/.tmux.conf", mode = "symlink" }
+"~/.base.gitconfig" = { source = "~/.dotfiles/home/.base.gitconfig", mode = "symlink" }
+"~/.gitattributes" = { source = "~/.dotfiles/home/.gitattributes", mode = "symlink" }
+"~/.config/git/ignore" = { source = "~/.dotfiles/home/.config/git/ignore", mode = "symlink" }
+"~/.config/herdr/config.toml" = { source = "~/.dotfiles/home/.config/herdr/config.toml", mode = "symlink" }
+# Karabiner replaces karabiner.json when it saves, which would break a file
+# link, so the whole directory is linked (Karabiner's own recommendation).
+"~/.config/karabiner" = { source = "~/.dotfiles/home/.config/karabiner", mode = "symlink" }
+
+# ~/.gitconfig is also written by `git config --global` and `gh auth
+# setup-git`, so only these two blocks are managed.
+"~/.gitconfig/identity" = { source = "~/.dotfiles/mise/snippets/git-identity.tera", template = "tera" }
+"~/.gitconfig/base" = { block = "[include]\n\tpath = ~/.base.gitconfig" }
+
+# =============================================================================
+# Homebrew formulae and casks. mise installs them into /opt/homebrew itself;
+# Homebrew does not need to be installed.
+# =============================================================================
+[bootstrap.brew]
+# Take over an app already in /Applications instead of reinstalling it, which
+# keeps its macOS privacy permissions.
+adopt = true
+
+[bootstrap.packages]
+# --- CLIs and libraries mise has no backend for
+"brew:wget" = "latest"
+"brew:aria2" = "latest"
+"brew:htop" = "latest"
+"brew:tree" = "latest"
+"brew:tmux" = "latest"
+"brew:sshpass" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:poppler" = "latest"
+"brew:tesseract-lang" = "latest"
+"brew:pdftk-java" = "latest"
+"brew:tectonic" = "latest"
+"brew:typos-cli" = "latest"
+"brew:whisper.cpp" = "latest"
+"brew:espeak-ng" = "latest"
+"brew:portaudio" = "latest"
+"brew:switchaudio-osx" = "latest"
+"brew:mole" = "latest"
+"brew:summarize" = "latest"
+"brew:gogcli" = "latest"
+"brew:googleworkspace-cli" = "latest"
+"brew:docker" = "latest"
+"brew:cmake" = "latest"
+"brew:xcodegen" = "latest"
+
+# --- Databases (start one with `brew services start <name>` once Homebrew is in)
+"brew:postgresql@16" = "latest"
+"brew:redis" = "latest"
+
+# --- Installed on the MacBook but niche; uncomment what this Mac needs
+# "brew:mariadb" = "latest"
+# "brew:maven" = "latest"
+# "brew:openjdk@21" = "latest"
+# "brew:llvm" = "latest"
+# "brew:rizin" = "latest"
+# "brew:hadoop" = "latest"
+# "brew:blast" = "latest"
+# "brew:fastqc" = "latest"
+# "brew:brewsci/bio/spades" = "latest"
+# "brew:steipete/tap/bird" = "latest"
+
+# --- Third-party taps: mise needs Ruby 3 to read their definitions, which a
+# fresh Mac lacks. Install these by hand once Homebrew is in (see README):
+#   brew install --cask datlechin/tap/pitboard-app
+#   brew install greptileai/tap/greptile
+
+# --- Fonts
+"brew-cask:font-meslo-lg-nerd-font" = "latest"
+"brew-cask:font-jetbrains-mono-nerd-font" = "latest"
+
+# --- Terminals and editors
+"brew-cask:ghostty" = "latest"
+"brew-cask:iterm2" = "latest"
+"brew-cask:visual-studio-code" = "latest"
+
+# --- AI apps
+"brew-cask:claude" = "latest"
+"brew-cask:chatgpt" = "latest"
+"brew-cask:antigravity" = "latest"
+"brew-cask:paseo" = "latest"
+"brew-cask:t3-code" = "latest"
+"brew-cask:ollama-app" = "latest"
+"brew-cask:wispr-flow" = "latest"
+
+# --- Everyday apps
+"brew-cask:google-chrome" = "latest"
+"brew-cask:obsidian" = "latest"
+"brew-cask:figma" = "latest"
+"brew-cask:telegram" = "latest"
+"brew-cask:discord" = "latest"
+"brew-cask:zalo" = "latest"
+"brew-cask:zoom" = "latest"
+"brew-cask:iina" = "latest"
+"brew-cask:the-unarchiver" = "latest"
+"brew-cask:easydict" = "latest"
+
+# --- System utilities
+"brew-cask:karabiner-elements" = "latest"
+"brew-cask:tailscale-app" = "latest"
+"brew-cask:cloudflare-warp" = "latest"
+"brew-cask:stats" = "latest"
+"brew-cask:lookaway" = "latest"
+"brew-cask:deskpad" = "latest"
+"brew-cask:gcloud-cli" = "latest"
+
+# --- Also on the MacBook; uncomment what this Mac needs
+# "brew-cask:warp" = "latest"
+# "brew-cask:termius" = "latest"
+# "brew-cask:logseq" = "latest"
+# "brew-cask:anki" = "latest"
+# "brew-cask:calibre" = "latest"
+# "brew-cask:obs" = "latest"
+# "brew-cask:google-drive" = "latest"
+# "brew-cask:microsoft-word" = "latest"
+# "brew-cask:microsoft-excel" = "latest"
+# "brew-cask:windows-app" = "latest"
+# "brew-cask:reminders-menubar" = "latest"
+# "brew-cask:hopper-disassembler" = "latest"
+# "brew-cask:mysqlworkbench" = "latest"
+# "brew-cask:android-commandlinetools" = "latest"
+
+# =============================================================================
+# Git repositories
+# =============================================================================
+[bootstrap.repos]
+"~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm" }
+
+# =============================================================================
+# macOS preferences, copied from the MacBook
+# =============================================================================
+[bootstrap.macos.dock]
+autohide = false
+orientation = "left"
+tilesize = 33
+magnification = false
+
+[bootstrap.macos.finder]
+show_pathbar = true
+show_status_bar = false
+preferred_view_style = "list"
+
+[bootstrap.macos.trackpad]
+tap_to_click = true
+three_finger_drag = false
+
+[bootstrap.macos.defaults]
+"com.apple.screencapture" = { location = "~/Pictures/Screenshots" }
+
+# =============================================================================
+# Hooks: each one is safe to run again
+# =============================================================================
+[bootstrap.hooks]
+pre-packages = "bash $HOME/.dotfiles/mise/scripts/prepare-host.sh"
+post-defaults = "killall Dock Finder SystemUIServer 2>/dev/null || true"
+
+# =============================================================================
+# Day-to-day tasks: `mise run dot:<name>` from any directory
+# =============================================================================
+[tasks."dot:cd"]
+description = "Open a shell in ~/.dotfiles; exit returns to where you were"
+dir = "{{env.HOME}}/.dotfiles"
+raw = true
+run = "exec ${SHELL:-zsh}"
+
+[tasks."dot:status"]
+description = "Show dotfiles not yet applied and uncommitted changes in ~/.dotfiles"
+run = ["mise dot status", "git -C $HOME/.dotfiles status --short"]
+
+[tasks."dot:save"]
+description = "Commit every change in ~/.dotfiles and push it"
+run = "bash $HOME/.dotfiles/mise/scripts/dot-save.sh"
+
+[tasks."dot:update"]
+description = "Pull the latest dotfiles, then link, install and apply anything new"
+run = [
+  "git -C $HOME/.dotfiles pull --rebase --autostash",
+  "mise bootstrap --yes",
+]
+
+[tasks."dot:up"]
+description = "Upgrade mise itself, every mise tool and every brew package"
+run = [
+  "mise self-update --yes",
+  "mise up",
+  "mise bootstrap packages upgrade --yes",
+]

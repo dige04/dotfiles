@@ -1,0 +1,123 @@
+{
+  "profiles": [
+    {
+      "complex_modifications": {
+        "rules": [
+          {
+            "description": "Phím ¥: thường = ¥, Shift = |",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "international3",
+                  "modifiers": {
+                    "mandatory": [
+                      "shift"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "backslash",
+                    "modifiers": [
+                      "left_shift"
+                    ]
+                  }
+                ],
+                "type": "basic"
+              },
+              {
+                "from": {
+                  "key_code": "international3"
+                },
+                "to": [
+                  {
+                    "key_code": "y",
+                    "modifiers": [
+                      "left_option"
+                    ]
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "英数: nhấn = ABC, giữ = Left Command",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "japanese_eisuu",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "left_command",
+                    "lazy": true
+                  }
+                ],
+                "to_if_alone": [
+                  {
+                    "select_input_source": {
+                      "input_source_id": "^com\\.apple\\.keylayout\\.ABC$"
+                    }
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "かな: nhấn = Vietnamese Telex, giữ = Right Command",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "japanese_kana",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "right_command",
+                    "lazy": true
+                  }
+                ],
+                "to_if_alone": [
+                  {
+                    "select_input_source": {
+                      "language": "^vi$"
+                    }
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "Default",
+      "selected": true,
+      "simple_modifications": [
+        {
+          "from": {
+            "key_code": "international1"
+          },
+          "to": [
+            {
+              "key_code": "grave_accent_and_tilde"
+            }
+          ]
+        }
+      ],
+      "virtual_hid_keyboard": {
+        "keyboard_type_v2": "ansi"
+      }
+    }
+  ]
+}
